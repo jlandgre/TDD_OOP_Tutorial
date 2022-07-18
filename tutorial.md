@@ -27,8 +27,8 @@ The business question is a a reasonable one, right? Is everything ok in market? 
 5.	Make a summary of consumption-weighted intensity by device
 
 For completeness , here is the deeper analysis [not described in detail here] enabled by the transformed data:</br>
-6.	To answer the client’s question about potentially-malfunctioning devices, we calculated time per **refill_percent** decrement and plotted this versus **intensity_aligned**. This let us look for outliers whose consumption didn’t make sense relative to intensity setting.
-7.	For limiting case consumers who kept their devices always on, we fit a regression model to get a concise, quantitative description of consumption versus intensity. This also allowed us to characterize the fraction of time non limiting case devices are running.
+* To answer the client’s question about potentially-malfunctioning devices, we calculated time per **refill_percent** decrement and plotted this versus **intensity_aligned**. This let us look for outliers whose consumption didn’t make sense relative to intensity setting.
+* For limiting case consumers who kept their devices always on, we fit a regression model to get a concise, quantitative description of consumption versus intensity. This also allowed us to characterize the fraction of time non limiting case devices are running.
 
 <p align="center">
   Transformed Data With Intensity Aligned To refill_Percent</br>
