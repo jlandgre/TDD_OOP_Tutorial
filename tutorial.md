@@ -6,7 +6,7 @@ It is one thing to know how to code classes aka objects in Python. It is another
 Using OOP gathers a topic’s methods and attributes together in a way that purely procedural code does not. Using TDD removes any future question about the program getting broken by changes. The TDD tests serve as part of the project's documentation and await being re-run at any time. Personally, I wish I had discovered this combo 20 years ago during my career as an R&D engineer. Certainly, I have always validated my models, but too often not in a way where it’s easy for myself or others to later extend the model or to re-ascertain that it is giving correct results. The TDD/OOP combo (Let’s call this “Tuhdoop” I guess?) has recently taken my working efficiency to a new level.
 
 #### TDD/OOP Case Study
-A simple data transformation makes a good case study. With TDD/OOP we simultaneously build tests and a Python class to do the job. Our case study is based on a real world client question requiring urgent turnaround. The business context was to search for malfunctioning internet-connected consumer devices in market. We recommended doing this by looking for outliers in measured consumption from a refillable reservoir in each device. The consumer uses an on-device **intensity** setting to control the rate. The picture shows mockup data, which is intentionally constructed to include edge cases and to resemble the project's AWS raw, event data from the devies. The test data is 40 rows from 3 devices. The production data is a few million rows on thousands of in-market devices.
+A simple data transformation makes a good case study. With TDD/OOP we simultaneously build tests and a Python class to do the job. Our case study is based on a real world client question requiring urgent turnaround. The business context was to search for malfunctioning internet-connected consumer devices in market. We recommended doing this by looking for outliers in measured consumption from a refillable reservoir in each device. The consumer uses an on-device **intensity** setting to control the rate. The picture shows mockup data, which is intentionally constructed to include edge cases and to resemble the project's AWS raw, event data from the device. The test data is 40 rows from 3 devices. The production data is a few million rows on thousands of in-market devices.
 
 <p align="center">
   Raw Data Mockup for Testing</br>
@@ -19,12 +19,6 @@ The **intensity** variable reports changes in a user controlled setting. Intensi
 
 The business question is a a reasonable one, right? Is everything ok in market? Not so fast though! The event-based raw data doesn’t align **intensity** reporting with the **refill_percent** reporting, so there’s work to do to answer. Once an intensity value is reported, it describes the device’s state until another event indicates a change. The data transform goal is to align **intensity** events with subsequent **refill_percent** events. Elemental steps for this are:
 
-<p align="center">
-  Transformed Data With Intensity Aligned To refill_Percent</br>
-  <img src=images/data_transformed5.png "transformed data" width=600></br>
-</p>
-
-
 #### Data Transformation Steps
 1.	Add a copy of the **intensity** column, **intensity_aligned**, to hold the transformed data
 2.	If there doesn’t happen to be an initial **intensity** event for a device’s data, add a dummy value, ‘999’, as a marker at each device change in data sorted by device and timestamp. This makes it possible to just fill down without propagating one device’s **intensity** settings into the next device’s rows.
@@ -32,9 +26,14 @@ The business question is a a reasonable one, right? Is everything ok in market? 
 4.	Clear unneeded **intensity_aligned** rows where **refill_percent is not populated
 5.	Make a summary of consumption-weighted intensity by device
 
-For completeness , here is the deeper analysis [not described in detail here] enabled by the transformed data:
+For completeness , here is the deeper analysis [not described in detail here] enabled by the transformed data:</br>
 6.	To answer the client’s question about potentially-malfunctioning devices, we calculated time per **refill_percent** decrement and plotted this versus **intensity_aligned**. This let us look for outliers whose consumption didn’t make sense relative to intensity setting.
 7.	For limiting case consumers who kept their devices always on, we fit a regression model to get a concise, quantitative description of consumption versus intensity. This also allowed us to characterize the fraction of time non limiting case devices are running.
+
+<p align="center">
+  Transformed Data With Intensity Aligned To refill_Percent</br>
+  <img src=images/data_transformed5.png "transformed data" width=600></br>
+</p>
 
 #### Coding The Project - Intro
 With that valuable pre-planning, we are ready to do the work. The working canvas is to initialize an **align_intensity.py** and **test_align_intensity.py** files side by side in an IDE such as VS Code shown here. Before describing the coding, it is worth mentioning a few, sanity-inducing conventions used for such projects.
@@ -147,7 +146,7 @@ That’s it. Just repeat this cycle of writing tests and methods for the above l
 ```
 
 #### Side notes
-There is one, Pandas elegance here worth highlighting. It is avoiding the temptation to  loop through the rows with **df.iterrows** to find the device-change rows. Instead, our class uses the **.shift** function in a Pandas filter for device-change rows. Either approach performs ok in the 40-row test data, but iterrows is painfully slow with millions of rows. Our code is concise and scales well for good performance.
+There is one, Pandas elegance here worth highlighting. It is avoiding the temptation to loop through the rows with **df.iterrows** to find the device-change rows. Instead, our class uses the **.shift** function in a Pandas filter for device-change rows. Either approach performs ok in the 40-row test data, but iterrows is painfully slow with millions of rows. Our code is concise and scales well for good performance.
 
 <p align="center">
   Loop-free Approach to Filter to Device-Change Rows
@@ -158,9 +157,9 @@ There is one, Pandas elegance here worth highlighting. It is avoiding the tempta
 self.fil_dev_change = self._dfC['device_id'] != self._dfC.shift(1)['device_id']
 ```
 
-The second side note is that we find that predictable code structure saves time and flailing around to find things. As you work, you may find it helpful to organize both test.py and class.py files in reverse “rolling scroll” order. This puts current work near the top of the files and saves a lot of searching and scrolling while debugging. 
+The second side note is that predictable code structure saves time and flailing around to find things. As you work, you may find it helpful to organize both test.py and class.py files in reverse “rolling scroll” order. This puts current work near the top of the files and saves a lot of searching and scrolling while debugging.
 
-Once the work is done, you can re-order the class.py file to put property functions just below the \__init__ function You can order the method functions in procedural order as much as possible. We find that it also helps clarity to initialize ALL attributes in \__init__ even if they are used until later in the pclass methods. This leads to \__init__ being a transparent list of attributes and the @properties being a transparent, ordered listing of procedure(s) as run by class methods.
+Once the work is done, you can re-order the class.py file such as intensity_aligned.py here to put property functions just below the \__init__ function You can order method functions in procedural order as much as possible. We find that it also helps clarity to initialize ALL attributes in \__init__ even if they are used until later in the pclass methods. This leads to \__init__ being a transparent list of attributes and the @properties being a transparent, ordered listing of procedure(s) as run by class methods.
 
 
   J.D. Landgrebe
