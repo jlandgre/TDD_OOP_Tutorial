@@ -22,8 +22,8 @@ The business question is a a reasonable one, right? Is everything ok in market? 
 #### Data Transformation Steps
 1.	Add a copy of the **intensity** column, **intensity_aligned**, to hold the transformed data
 2.	If there doesn’t happen to be an initial **intensity** event for a device’s data, add a dummy value, ‘999’, as a marker at each device change in data sorted by device and timestamp. This makes it possible to just fill down without propagating one device’s **intensity** settings into the next device’s rows.
-3.	Fill **intensity** down to populate it for all rows including the populated **refill_percent rows
-4.	Clear unneeded **intensity_aligned** rows where **refill_percent is not populated
+3.	Fill **intensity** down to populate it for all rows including the populated **refill_percent** rows
+4.	Clear unneeded **intensity_aligned** rows where **refill_percent** is not populated
 5.	Make a summary of consumption-weighted intensity by device
 
 For completeness , here is the deeper analysis [not described in detail here] enabled by the transformed data:</br>
