@@ -159,7 +159,7 @@ self.fil_dev_change = self._dfC['device_id'] != self._dfC.shift(1)['device_id']
 
 The second side note is that predictable code structure saves time and flailing around to find things. As you work, you may find it helpful to organize both test.py and class.py files in reverse “rolling scroll” order. This puts current work near the top of the files and saves a lot of searching and scrolling while debugging.
 
-Once the work is done, you can re-order the class.py file such as intensity_aligned.py here to put property functions just below the \__init__ function You can order method functions in procedural order as much as possible. We find that it also helps clarity to initialize ALL attributes in \__init__ even if they are used until later in the pclass methods. This leads to \__init__ being a transparent list of attributes and the @properties being a transparent, ordered listing of procedure(s) as run by class methods.
+Once the work is done, you can re-order the class.py file such as intensity_aligned.py here to put property functions just below the \__init__ function You can order method functions in procedural order as much as possible. We find that it also helps clarity to initialize ALL attributes in \__init__ even if they are not used until later in the class methods. This leads to \__init__ being a transparent list of attributes and the @properties being a transparent, ordered listing of procedure(s) as run by class methods.
 
 
   J.D. Landgrebe
